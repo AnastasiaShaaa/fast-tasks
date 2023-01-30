@@ -15,12 +15,13 @@ class Solution {
         $steps = $this->createNodesSteps($line);
         $conditions = $this->createNodesConditions(count($steps));
 
-        foreach ($conditions as $condition) {
-            $condition = str_split($condition);
-            $result[] = $this->calculate($line, $end, $condition);
-        }
+        var_dump($conditions[6]);
+//        foreach ($conditions as $condition) {
+//            $condition = str_split($condition);
+//            $result[] = $this->calculate($line, $end, $condition);
+//        }
         var_dump(json_encode($line));
-//        $result[] = $this->calculate($line, $end, str_split($conditions[2]));
+        $result[] = $this->calculate($line, $end, str_split($conditions[6]));
 
         return min($result);
     }
@@ -56,9 +57,9 @@ class Solution {
 //        var_dump($condition);
 
         for ($countCube = $index = 0; $index < $countSquare - 1; $index++) {
-//            var_dump("---------------");
+            var_dump("---------------");
 //            var_dump('countCube: ' . $countCube);
-//            var_dump('index: ' . $index);
+            var_dump('index: ' . $index);
 
 //            var_dump('index: ' . $index);
 
