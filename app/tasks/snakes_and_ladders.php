@@ -12,16 +12,21 @@ class Solution {
         $line = $this->decodeToOneLine($board);
         $line[$end] = 0;
 
+        if ($this->isCycle($line)) {
+            return -1;
+        }
+
+        $line = $this->countSteps($line);
+
         $steps = $this->createNodesSteps($line);
         $conditions = $this->createNodesConditions(count($steps));
 
-        var_dump($conditions[6]);
-//        foreach ($conditions as $condition) {
-//            $condition = str_split($condition);
-//            $result[] = $this->calculate($line, $end, $condition);
-//        }
+        foreach ($conditions as $condition) {
+            $condition = str_split($condition);
+            $result[] = $this->calculate($line, $end, $condition);
+        }
         var_dump(json_encode($line));
-        $result[] = $this->calculate($line, $end, str_split($conditions[6]));
+//        $result[] = $this->calculate($line, $end, str_split($conditions[6]));
 
         return min($result);
     }
@@ -39,7 +44,7 @@ class Solution {
             $lines = array_merge($lines, $line);
         }
 
-        return $this->countSteps($lines);
+        return $lines;
     }
 
     function countSteps(array $lines): array
@@ -54,45 +59,29 @@ class Solution {
         $count = $indexCondition = 0;
         $countSquare = $end;
 
-//        var_dump($condition);
-
         for ($countCube = $index = 0; $index < $countSquare - 1; $index++) {
-            var_dump("---------------");
+//            var_dump("---------------");
 //            var_dump('countCube: ' . $countCube);
-            var_dump('index: ' . $index);
-
-//            var_dump('index: ' . $index);
-
-
-//             var_dump('begin: ' . $index);
-
 //            var_dump('index: ' . $index);
 //            var_dump('value: ' . $line[$index]);
 //            var_dump('count: ' . $count);
 //            var_dump('countCube: ' . $countCube);
-//            var_dump('end: ' . $end);
-
-//            $end += $line[$index];
 
             if ($line[$index] != -1) {
                 if (key_exists($indexCondition, $condition) && (int) $condition[$indexCondition]) {
-//                    $end += $line[$index];
 //                    $index -= $line[$index] < 0 ? $line[$index] + 1 : $line[$index];
                     $index -= $line[$index] + 1;
 
-//                    $count += max($countCube, 1);
                     $count += 1;
+            var_dump('index: ' . $index);
+            var_dump('count: ' . $count);
 
                     $countCube = 0;
-//                    $indexCondition++;
-//                    continue;
                 }
-
                 $indexCondition++;
             }
 
             if ($countCube == 6) {
-//                $end -= $countCube;
                 $countCube = 1;
                 $count++;
             } else {
@@ -100,14 +89,11 @@ class Solution {
             }
 
             if (($index + 1) === ($countSquare - 1)) {
-//                $countCube = 1;
                 $count++;
             }
 //            var_dump('count: ' . $count);
-//             var_dump('end: ' . $index);
         }
         var_dump($count);
-//        die();
         return $count;
     }
 
@@ -153,12 +139,32 @@ class Solution {
 
         return $result;
     }
+
+    public function isCycle(array $board): bool
+    {
+        for ($repeat = 0, $i = 1; $i < count($board) - 1; $i++) {
+            if ($board[$i] == $board[$i - 1] && $board[$i] > 0) {
+                $repeat += 1;
+            } else {
+                $repeat = 0;
+            }
+
+            if ($repeat == 5) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 //$board = [[-1,7,-1],[-1,6,9],[-1,-1,2]];
 //$board = [[-1,4,-1],[6,2,6],[-1,3,-1]]; // output: 2
-$board = [[1,1,-1],[1,1,1],[-1,1,1]]; // output: -1
+//$board = [[-1,-1,-1],[-1,9,8],[-1,8,9]]; // output: 1
+//$board = [[1,1,-1],[1,1,1],[-1,1,1]]; // output: -1
+$board = [[-1,-1],[-1,3]]; // output: 1
 //$board = [[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,35,-1,-1,13,-1],[-1,-1,-1,-1,-1,-1],[-1,15,-1,-1,-1,-1]];
+//$board = [[-1,-1,27,13,-1,25,-1],[-1,-1,-1,-1,-1,-1,-1],[44,-1,8,-1,-1,2,-1],[-1,30,-1,-1,-1,-1,-1],[3,-1,20,-1,46,6,-1],[-1,-1,-1,-1,-1,-1,29],[-1,29,21,33,-1,-1,-1]]; // output: 4
 //$board = [[-1,-1,-1,-1,-1,-1,-1,-1,-1,79,-1,-1,-1],[-1,-1,-1,-1,109,-1,-1,-1,-1,-1,86,-1,-1],[-1,-1,115,148,-1,-1,25,-1,10,-1,16,7,25],[-1,-1,61,-1,91,75,-1,-1,-1,-1,-1,-1,79],[-1,42,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,56,-1,34,-1,13,-1,-1,-1],[-1,110,-1,96,105,-1,-1,-1,40,-1,-1,-1,-1],[-1,-1,114,-1,-1,12,-1,32,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,44,-1,-1,13,25,49],[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[166,59,3,-1,27,-1,-1,-1,-1,-1,-1,-1,-1],[-1,99,-1,-1,-1,-1,-1,-1,70,-1,-1,-1,-1],[-1,-1,146,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]];
 
 $result = (new Solution())->snakesAndLadders($board);
